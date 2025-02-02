@@ -10,8 +10,6 @@ const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 await commonAuthApi.updateSlackUserInfo(user.value.user_metadata.full_name, user.value.user_metadata.provider_id)
 
-console.log('user', user)
-
 const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
 
 const signOut = async () => {
