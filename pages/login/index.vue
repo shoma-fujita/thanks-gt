@@ -1,16 +1,16 @@
 <script setup>
 const supabase = useSupabaseClient()
 
-const signInWithGoogle = async () => {
+const signInWithSlack = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
+    provider: 'slack_oidc',
     options: {
       redirectTo: '/home',
     },
   })
 
   if (error) {
-    return console.error('Google Auth Error:', error)
+    return console.error('Slack Auth Error:', error)
   }
 }
 </script>
@@ -19,9 +19,9 @@ const signInWithGoogle = async () => {
   <div class="Login">
     <h1>login Page</h1>
     <button
-      @click="signInWithGoogle"
+      @click="signInWithSlack"
     >
-      Googleでログイン
+      Slackでログイン
     </button>
   </div>
 </template>

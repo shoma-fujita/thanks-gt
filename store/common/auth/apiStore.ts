@@ -9,27 +9,27 @@ export const commonAuthApiStore = () => {
   /** State */
   const _state = useState<ApiState>('common-auth-api-store', () => {
     return {
-      googleUserInfo: null,
+      slackUserInfo: null,
     }
   })
   const getters = {
     /**
-     * Google ユーザー情報を取得する
-     * @returns Google ユーザー情報
+     * Slack ユーザー情報を取得する
+     * @returns Slack ユーザー情報
      */
-    googleUserInfoOrThrow(): string {
-      if (isNull(_state.value.googleUserInfo)) {
-        throw new Error('googleUserInfo is null')
+    slackUserInfoOrThrow(): ApiState['slackUserInfo'] {
+      if (isNull(_state.value.slackUserInfo)) {
+        throw new Error('slackUserInfo is null')
       }
-      return _state.value.googleUserInfo
+      return _state.value.slackUserInfo
     },
   }
   const actions = {
     /**
-     * ログインした Google アカウント情報を更新する
+     * ログインした Slack アカウント情報を更新する
      */
-    async updateGoogleUserInfo(userName: string | null) {
-      _state.value.googleUserInfo = userName
+    async updateSlackUserInfo(slackName: string, memberId: string) {
+      _state.value.slackUserInfo = { slackName, memberId }
     },
   }
   return {
