@@ -17,11 +17,23 @@ const signInWithSlack = async () => {
 
 <template>
   <div class="LogInBody">
-    <h1>LogIn Page</h1>
+    <h1 class="LogInBody__Title">
+      LogIn Page
+    </h1>
     <button
-      @click="signInWithSlack"
+      class="LogInBody__Item"
+      @click="
+        signInWithSlack"
     >
-      Slack でログイン
+      <img
+        src="@/assets/img/slack-icon.png"
+        alt="Slack のアイコン画像"
+        class="LogInBody__Icon"
+      >Slack でログイン
     </button>
   </div>
 </template>
+
+<style lang="scss" scoped>
+@use './style.scss';
+</style>

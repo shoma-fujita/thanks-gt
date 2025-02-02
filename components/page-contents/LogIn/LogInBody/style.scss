@@ -1,0 +1,29 @@
+.LogInBody{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    &__Item {
+        background-color: #fff;
+        border: gray 1px solid;
+        border-radius: 8px;
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        font-size: 16px;
+        font-weight: 600;
+        justify-content: center;
+        padding: 8px 16px;
+        gap: 8px;
+
+        &:hover {
+            background-color: #f0eded;
+        }
+    }
+
+    &__Icon {
+        height: 30px;
+        width: 30px;
+    }
+}
