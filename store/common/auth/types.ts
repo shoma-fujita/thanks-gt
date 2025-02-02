@@ -6,5 +6,7 @@ export type ApiState = {
     slackName: string
     /** member ID */
     memberId: string
+    /** ユーザーのプロフィール画像 URL */
+    profileImageUrl: string
   } | null
 }

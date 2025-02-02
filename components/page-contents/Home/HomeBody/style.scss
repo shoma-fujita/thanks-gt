@@ -1,8 +1,13 @@
-.LogInBody{
+.HomeBody {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
+    &__Image {
+        height: 30px;
+        width: 30px;
+    }
 
     &__Button {
         background-color: #fff;
@@ -20,10 +25,5 @@
         &:hover {
             background-color: #f0eded;
         }
-    }
-
-    &__Icon {
-        height: 30px;
-        width: 30px;
     }
 }

@@ -21,7 +21,7 @@ const signInWithSlack = async () => {
       LogIn Page
     </h1>
     <button
-      class="LogInBody__Item"
+      class="LogInBody__Button"
       @click="
         signInWithSlack"
     >

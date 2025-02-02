@@ -28,8 +28,8 @@ export const commonAuthApiStore = () => {
     /**
      * ログインした Slack アカウント情報を更新する
      */
-    async updateSlackUserInfo(slackName: string, memberId: string) {
-      _state.value.slackUserInfo = { slackName, memberId }
+    async updateSlackUserInfo(slackName: string, memberId: string, profileImageUrl: string) {
+      _state.value.slackUserInfo = { slackName, memberId, profileImageUrl }
     },
   }
   return {
