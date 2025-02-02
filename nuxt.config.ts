@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@nuxtjs/supabase'],
   ssr: false,
   devtools: { enabled: true },
+  css: ['normalize.css'],
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
