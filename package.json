@@ -12,6 +12,7 @@
     "format": "eslint --fix . "
   },
   "dependencies": {
+    "@nuxtjs/supabase": "1.4.6",
     "@supabase/supabase-js": "^2.48.1",
     "nuxt": "^3.15.4",
     "vue": "latest",

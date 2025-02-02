@@ -1,7 +1,18 @@
 <script setup>
-import { useAuth } from '@/composables/useAuth'
+const supabase = useSupabaseClient()
 
-const { signInWithGoogle, signOut } = useAuth()
+const signInWithGoogle = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: '/home',
+    },
+  })
+
+  if (error) {
+    return console.error('Google Auth Error:', error)
+  }
+}
 </script>
 
 <template>
@@ -11,9 +22,6 @@ const { signInWithGoogle, signOut } = useAuth()
       @click="signInWithGoogle"
     >
       Googleでログイン
-    </button>
-    <button @click="signOut">
-      ログアウト
     </button>
   </div>
 </template>
