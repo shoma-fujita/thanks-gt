@@ -4,7 +4,6 @@ import LogInBody from '../LogInBody/index.vue'
 
 <template>
   <div class="Container">
-    <SignInHeader />
     <LogInBody />
   </div>
 </template>
