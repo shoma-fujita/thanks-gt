@@ -1,4 +1,4 @@
-.AppHeader {
+.ClientHeader {
     padding: 0 250px;
     display: flex;
     align-items: center;
@@ -26,6 +26,18 @@
         font-size: 16px;
     }
 
+    &__UserInformationDelimiter{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__Avatar {
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+    }
+
     &__Button {
         background-color: #fff;
         border: gray 1px solid;
@@ -42,10 +54,5 @@
         &:hover {
             background-color: #f0eded;
         }
-    }
-
-    &__SlackImage {
-        height: 15px;
-        width: 15px;
     }
 }

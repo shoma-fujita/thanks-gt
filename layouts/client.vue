@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import AppHeader from '@/components/layout/AppHeader/index.vue'
+import ClientHeader from '@/components/layout/ClientHeader/index.vue'
 import AppFooter from '@/components/layout/AppFooter/index.vue'
 </script>
 
 <template>
   <div class="Layouts">
-    <AppHeader class="Layouts__Header" />
+    <ClientHeader />
     <slot />
-    <AppFooter class="Layouts__Footer" />
+    <AppFooter />
   </div>
 </template>

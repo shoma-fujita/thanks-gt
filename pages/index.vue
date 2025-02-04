@@ -1,3 +1,9 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default',
+})
+</script>
+
 <template>
   <div class="Top">
     <h1>Top Page</h1>

@@ -28,7 +28,7 @@ const signInWithSlack = async () => {
       <img
         src="@/assets/img/slack-icon.png"
         alt="Slack のアイコン画像"
-        class="LogInBody__Icon"
+        class="LogInBody__Image"
       >Slack でログイン
     </button>
   </div>

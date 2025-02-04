@@ -1,6 +1,6 @@
 <template>
   <div class="AppFooter">
-    <span>@ 2024 Thanks GT -</span>
+    <span class="AppFooter__Text">@ 2025 Thanks GT -</span>
     <a
       href="https://github.com/shoma-fujita"
       target="_blank"
@@ -8,3 +8,7 @@
     >shoma-fujita</a>
   </div>
 </template>
+
+<style lang="scss" scoped>
+@use './style.scss';
+</style>
