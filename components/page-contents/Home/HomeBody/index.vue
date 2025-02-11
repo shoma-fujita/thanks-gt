@@ -73,6 +73,15 @@ const selectedUsersText = computed(() =>
         </div>
       </div>
     </div>
+    <div class="HomeBody__TextAreaWrapper">
+      <textarea
+        class="HomeBody__TextArea"
+        placeholder="感謝の言葉を入力してください"
+      />
+    </div>
+    <button class="HomeBody__SubmitButton">
+      感謝を伝える
+    </button>
   </div>
 </template>
 
