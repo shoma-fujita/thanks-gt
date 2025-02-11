@@ -45,10 +45,21 @@
         cursor: pointer;
         border-radius: 4px;
         padding: 8px;
+        display: flex;
+        justify-content: space-between;
 
         &:hover {
             background-color: #f0eded;
         }
+    }
+
+    &__UserInfoDelimiter {
+        display: flex;
+        align-items: center;
+    }
+
+    &__Item {
+        margin-left: 16px;
     }
 
     &__TextAreaWrapper {
@@ -75,9 +86,11 @@
         justify-content: center;
         padding: 16px 32px;
         gap: 8px;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
 
         &:hover {
-            background-color: #e7a6d2;
+            background-color: #FFDDFF;
+            transition: background 1s;
         }
     }
 }

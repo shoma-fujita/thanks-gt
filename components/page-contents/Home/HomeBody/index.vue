@@ -28,7 +28,7 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-const toggleOption = (name: string, memberId: string) => {
+const checkUser = (name: string, memberId: string) => {
   if (selectedUsers.value.has(name)) {
     selectedUsers.value.delete(name)
     selectedUsersMemberIds.value.delete(memberId)
@@ -90,9 +90,22 @@ const submitMessage = async () => {
           v-for="user in users"
           :key="user.uuid"
           class="HomeBody__DropDown"
-          @click="toggleOption(user.name, user.slack_member_id)"
+          @click="checkUser(user.name, user.slack_member_id)"
         >
-          <span>{{ user.name }}</span>
+          <div class="HomeBody__UserInfoDelimiter">
+            <img
+              :src="user.slack_profile_image"
+              alt="slackのプロフィール画像"
+              class="HomeBody__Image"
+            >
+            <span class="HomeBody__Item">{{ user.name }}</span>
+          </div>
+          <img
+            v-if="selectedUsers.has(user.name)"
+            src="@/assets/img/check-icon.png"
+            alt="チェック画像"
+            class="HomeBody__Image"
+          >
         </div>
       </div>
     </div>
@@ -107,6 +120,11 @@ const submitMessage = async () => {
       class="HomeBody__SubmitButton"
       @click="submitMessage"
     >
+      <img
+        src="@/assets/img/love-icon.png"
+        alt="いいね画像"
+        class="HomeBody__Image HomeBody__LoveImage"
+      >
       感謝を伝える
     </button>
   </div>
