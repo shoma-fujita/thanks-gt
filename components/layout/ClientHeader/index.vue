@@ -10,7 +10,7 @@ if (isNull(user.value)) {
   throw new Error('User is not logged in')
 }
 
-await commonAuthApi.updateSlackUserInfo(user.value.user_metadata.full_name, user.value.user_metadata.provider_id, user.value.user_metadata.avatar_url)
+await commonAuthApi.updateSlackUserInfo(user.value.id, user.value.user_metadata.full_name, user.value.user_metadata.provider_id, user.value.user_metadata.avatar_url)
 
 const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
 
