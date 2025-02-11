@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   css: ['normalize.css'],
   runtimeConfig: {
     public: {
+      googleServiceAccountEmail: '',
+      googlePrivateKey: '',
+      spreadSheetId: '',
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
       supabaseKey: process.env.NUXT_PUBLIC_SUPABASE_KEY,
     },

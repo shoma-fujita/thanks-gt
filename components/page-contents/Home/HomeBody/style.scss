@@ -51,11 +51,11 @@
         }
     }
 
-    &__TextArea {
-        &Wrapper {
-            margin-bottom: 16px;
-        }
+    &__TextAeraWrapper {
+        margin-bottom: 16px;
+    }
 
+    &__TextArea {
         width: 300px;
         height: 200px;
         border: 1px solid #e5e7eb;

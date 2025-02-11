@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.48.1",
     "add": "^2.0.6",
     "es-toolkit": "^1.32.0",
+    "googleapis": "^144.0.0",
     "normalize.css": "^8.0.1",
     "nuxt": "^3.15.4",
     "vue": "latest",

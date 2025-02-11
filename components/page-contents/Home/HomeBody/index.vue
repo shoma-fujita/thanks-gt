@@ -6,6 +6,8 @@ const commonAuthApi = commonAuthApiStore()
 const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
 const isDropdownOpen = ref(false)
 const selectedUsers = ref(new Set<string>())
+const selectedUsersMemberIds = ref(new Set<string>())
+const message = ref<string>('')
 
 const { data: users } = await useAsyncData('users-upsert', async () => {
   await client.from('users').upsert(
@@ -26,18 +28,39 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-const toggleOption = (option: string) => {
-  if (selectedUsers.value.has(option)) {
-    selectedUsers.value.delete(option)
+const toggleOption = (name: string, memberId: string) => {
+  if (selectedUsers.value.has(name)) {
+    selectedUsers.value.delete(name)
+    selectedUsersMemberIds.value.delete(memberId)
   }
   else {
-    selectedUsers.value.add(option)
+    selectedUsers.value.add(name)
+    selectedUsersMemberIds.value.add(memberId)
   }
 }
 
 const selectedUsersText = computed(() =>
   selectedUsers.value.size ? Array.from(selectedUsers.value).join(', ') : '相手を選択',
 )
+
+const selectedUsersMemberIdsText = computed(() =>
+  selectedUsersMemberIds.value.size ? Array.from(selectedUsersMemberIds.value).join(', ') : '',
+)
+
+const submitMessage = async () => {
+  const payload = {
+    from: slackUserInfo.slackName,
+    fromMemberId: slackUserInfo.memberId,
+    to: selectedUsersText.value,
+    toMemberIds: selectedUsersMemberIdsText.value,
+    message: message.value,
+  }
+
+  await useFetch('/api/googleSpredsheet/add', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
 </script>
 
 <template>
@@ -67,7 +90,7 @@ const selectedUsersText = computed(() =>
           v-for="user in users"
           :key="user.uuid"
           class="HomeBody__DropDown"
-          @click="toggleOption(user.name)"
+          @click="toggleOption(user.name, user.slack_member_id)"
         >
           <span>{{ user.name }}</span>
         </div>
@@ -75,11 +98,15 @@ const selectedUsersText = computed(() =>
     </div>
     <div class="HomeBody__TextAreaWrapper">
       <textarea
+        v-model="message"
         class="HomeBody__TextArea"
         placeholder="感謝の言葉を入力してください"
       />
     </div>
-    <button class="HomeBody__SubmitButton">
+    <button
+      class="HomeBody__SubmitButton"
+      @click="submitMessage"
+    >
       感謝を伝える
     </button>
   </div>
