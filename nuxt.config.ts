@@ -9,8 +9,8 @@ export default defineNuxtConfig({
       googleServiceAccountEmail: '',
       googlePrivateKey: '',
       spreadSheetId: '',
-      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
-      supabaseKey: process.env.NUXT_PUBLIC_SUPABASE_KEY,
+      supabaseUrl: '',
+      supabaseKey: '',
     },
   },
   compatibilityDate: '2024-11-01',
@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     },
   },
   supabase: {
-    url: process.env.NUXT_PUBLIC_SUPABASE_URL,
-    key: process.env.NUXT_PUBLIC_SUPABASE_KEY,
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
   },
 })
