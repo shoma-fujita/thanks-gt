@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { z } from 'zod'
 import { commonAuthApiStore } from '@/store/common/auth'
 
 const client = useSupabaseClient()
@@ -8,6 +9,15 @@ const isDropdownOpen = ref(false)
 const selectedUsers = ref(new Set<string>())
 const selectedUsersMemberIds = ref(new Set<string>())
 const message = ref<string>('')
+
+const validationSchema = z.object({
+  to: z.string().refine(value => value !== '相手を選択', {
+    message: '相手を選択してください',
+  }),
+  message: z.string().min(1, {
+    message: '感謝の言葉を入力してください',
+  }),
+})
 
 const { data: users } = await useAsyncData('users-upsert', async () => {
   await client.from('users').upsert(
@@ -48,6 +58,13 @@ const selectedUsersMemberIdsText = computed(() =>
 )
 
 const submitMessage = async () => {
+  if (!validationSchema.safeParse({
+    to: selectedUsersText.value,
+    message: message.value,
+  }).success) {
+    return
+  }
+
   const payload = {
     from: slackUserInfo.slackName,
     fromMemberId: slackUserInfo.memberId,
