@@ -32,11 +32,11 @@
     "typescript": "^5.7.3"
   },
   "engines": {
-    "node": "22.14.x",
+    "node": "22.13.x",
     "npm": "Use the yarn command!"
   },
   "volta": {
-    "node": "22.14.0",
+    "node": "22.13.1",
     "yarn": "1.22.22"
   }
 }
