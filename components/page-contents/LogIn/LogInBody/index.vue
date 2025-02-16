@@ -4,9 +4,6 @@ const supabase = useSupabaseClient()
 const signInWithSlack = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'slack_oidc',
-    options: {
-      redirectTo: 'http://localhost:3000/home',
-    },
   })
 
   if (error) {
