@@ -188,6 +188,7 @@ const submitMessage = async () => {
     <button
       class="HomeBody__SubmitButton"
       :disabled="isLoading"
+      :class="{ 'HomeBody__SubmitButton--Disabled': isLoading }"
       @click="submitMessage"
     >
       <template v-if="isLoading">
@@ -197,7 +198,7 @@ const submitMessage = async () => {
         <img
           src="@/assets/img/love-icon.png"
           alt="いいね画像"
-          class="HomeBody__Image HomeBody__LoveImage"
+          class="HomeBody__Image"
         >
         {{ successMessage }}
       </template>

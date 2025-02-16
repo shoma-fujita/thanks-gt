@@ -92,6 +92,14 @@
             background-color: #FFDDFF;
             transition: background 1s;
         }
+
+        &--Disabled {
+            cursor: not-allowed;
+
+            &:hover {
+                background-color: grey;
+            }
+        }
     }
 
     &__ErrorMessage {
