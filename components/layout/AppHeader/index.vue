@@ -1,9 +1,13 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient()
+const config = useRuntimeConfig()
 
 const signInWithSlack = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'slack_oidc',
+    options: {
+      redirectTo: config.public.supabaseRedirectUrl as string,
+    },
   })
 
   if (error) {
