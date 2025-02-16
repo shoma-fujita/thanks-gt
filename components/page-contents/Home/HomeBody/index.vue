@@ -2,12 +2,25 @@
 import { z } from 'zod'
 import { commonAuthApiStore } from '@/store/common/auth'
 
+/** Supabase Client */
 const client = useSupabaseClient()
+
+/** Common Auth API */
 const commonAuthApi = commonAuthApiStore()
+
+/** ログイン中の Slack ユーザー情報 */
 const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
-const isDropdownOpen = ref(false)
+
+/** ドロップダウンが開いているかどうか */
+const isDropdownOpen = ref<boolean>(false)
+
+/** 選択されたユーザー */
 const selectedUsers = ref(new Set<string>())
+
+/** 選択されたユーザーのメンバー ID */
 const selectedUsersMemberIds = ref(new Set<string>())
+
+/** 感謝メッセージ */
 const message = ref<string>('')
 
 const validationSchema = z.object({
@@ -34,10 +47,12 @@ const { data: users } = await useAsyncData('users-upsert', async () => {
   return data
 })
 
+/** ドロップダウンの開閉 */
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
+/** ユーザーのチェック */
 const checkUser = (name: string, memberId: string) => {
   if (selectedUsers.value.has(name)) {
     selectedUsers.value.delete(name)
@@ -49,14 +64,17 @@ const checkUser = (name: string, memberId: string) => {
   }
 }
 
-const selectedUsersText = computed(() =>
+/** 選択されたユーザーのテキスト */
+const selectedUsersText = computed<string>(() =>
   selectedUsers.value.size ? Array.from(selectedUsers.value).join(', ') : '相手を選択',
 )
 
-const selectedUsersMemberIdsText = computed(() =>
+/** 選択されたユーザーのメンバー ID のテキスト */
+const selectedUsersMemberIdsText = computed<string>(() =>
   selectedUsersMemberIds.value.size ? Array.from(selectedUsersMemberIds.value).join(', ') : '',
 )
 
+/** メッセージの送信 */
 const submitMessage = async () => {
   if (!validationSchema.safeParse({
     to: selectedUsersText.value,
