@@ -93,4 +93,10 @@
             transition: background 1s;
         }
     }
+
+    &__ErrorMessage {
+        color: red;
+        display: flex;
+        justify-content: center;
+    }
 }

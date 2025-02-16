@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { z } from 'zod'
+import { template } from 'es-toolkit/compat'
 import { commonAuthApiStore } from '@/store/common/auth'
 
 /** Supabase Client */
@@ -23,6 +24,12 @@ const selectedUsersMemberIds = ref(new Set<string>())
 /** 感謝メッセージ */
 const message = ref<string>('')
 
+/** ローディング中かどうか */
+const isLoading = ref<boolean>(false)
+
+/** 送信成功メッセージ */
+const successMessage = ref<'感謝を伝える' | '感謝を伝えました'>('感謝を伝える')
+
 const validationSchema = z.object({
   to: z.string().refine(value => value !== '相手を選択', {
     message: '相手を選択してください',
@@ -30,6 +37,14 @@ const validationSchema = z.object({
   message: z.string().min(1, {
     message: '感謝の言葉を入力してください',
   }),
+})
+
+const validationResult = computed(() => {
+  const result = validationSchema.safeParse({
+    to: selectedUsersText.value,
+    message: message.value,
+  })
+  return result.success ? {} : result.error.flatten().fieldErrors
 })
 
 const { data: users } = await useAsyncData('users-upsert', async () => {
@@ -52,7 +67,7 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-/** ユーザーのチェック */
+/** 洗濯中のユーザー情報取得 */
 const checkUser = (name: string, memberId: string) => {
   if (selectedUsers.value.has(name)) {
     selectedUsers.value.delete(name)
@@ -82,6 +97,7 @@ const submitMessage = async () => {
   }).success) {
     return
   }
+  isLoading.value = true
 
   const payload = {
     from: slackUserInfo.slackName,
@@ -95,6 +111,12 @@ const submitMessage = async () => {
     method: 'POST',
     body: JSON.stringify(payload),
   })
+
+  isLoading.value = false
+  successMessage.value = '感謝を伝えました'
+  setTimeout(() => {
+    successMessage.value = '感謝を伝える'
+  }, 3000)
 }
 </script>
 
@@ -143,6 +165,12 @@ const submitMessage = async () => {
           >
         </div>
       </div>
+      <p
+        v-if="validationResult.to"
+        class="HomeBody__ErrorMessage"
+      >
+        {{ validationResult.to[0] }}
+      </p>
     </div>
     <div class="HomeBody__TextAreaWrapper">
       <textarea
@@ -150,17 +178,29 @@ const submitMessage = async () => {
         class="HomeBody__TextArea"
         placeholder="感謝の言葉を入力してください"
       />
+      <p
+        v-if="validationResult.message"
+        class="HomeBody__ErrorMessage"
+      >
+        {{ validationResult.message[0] }}
+      </p>
     </div>
     <button
       class="HomeBody__SubmitButton"
+      :disabled="isLoading"
       @click="submitMessage"
     >
-      <img
-        src="@/assets/img/love-icon.png"
-        alt="いいね画像"
-        class="HomeBody__Image HomeBody__LoveImage"
-      >
-      感謝を伝える
+      <template v-if="isLoading">
+        送信中...
+      </template>
+      <template v-else>
+        <img
+          src="@/assets/img/love-icon.png"
+          alt="いいね画像"
+          class="HomeBody__Image HomeBody__LoveImage"
+        >
+        {{ successMessage }}
+      </template>
     </button>
   </div>
 </template>
