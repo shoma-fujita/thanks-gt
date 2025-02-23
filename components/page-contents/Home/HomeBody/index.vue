@@ -29,8 +29,6 @@ const isLoading = ref<boolean>(false)
 /** 送信成功メッセージ */
 const successMessage = ref<'感謝を伝える' | '感謝を伝えました'>('感謝を伝える')
 
-const config = useRuntimeConfig()
-
 const validationSchema = z.object({
   to: z.string().refine(value => value !== '相手を選択', {
     message: '相手を選択してください',
@@ -99,10 +97,6 @@ const submitMessage = async () => {
     return
   }
   isLoading.value = true
-
-  console.log('googleServiceAccountKey', config.public.googleServiceAccountEmail)
-  console.log('googleSpreadsheetId', config.public.spreadSheetId)
-  console.log('googlePrivateKey', config.public.googlePrivateKey)
 
   const payload = {
     from: slackUserInfo.slackName,
