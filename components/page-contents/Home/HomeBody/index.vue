@@ -20,7 +20,7 @@ const selectedUsers = ref(new Set<string>())
 /** 選択されたユーザーのメンバー ID */
 const selectedUsersMemberIds = ref(new Set<string>())
 
-/** 感謝メッセージ */
+/** 感謝のメッセージ */
 const message = ref<string>('')
 
 /** ローディング中かどうか */
