@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { z } from 'zod'
+import { isNull } from 'es-toolkit'
+import type { registeredUserInfo } from './types'
 import { commonAuthApiStore } from '@/store/common/auth'
+import { pageUiStore } from '@/store/page/home'
 
 /** Supabase Client */
 const client = useSupabaseClient()
 
 /** Common Auth API */
 const commonAuthApi = commonAuthApiStore()
+
+/** page ui store */
+const uiStore = pageUiStore()
 
 /** ログイン中の Slack ユーザー情報 */
 const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
@@ -20,7 +26,7 @@ const selectedUsers = ref(new Set<string>())
 /** 選択されたユーザーのメンバー ID */
 const selectedUsersMemberIds = ref(new Set<string>())
 
-/** 感謝のメッセージ */
+/** 感謝メッセージ */
 const message = ref<string>('')
 
 /** ローディング中かどうか */
@@ -46,7 +52,7 @@ const validationResult = computed(() => {
   return result.success ? {} : result.error.flatten().fieldErrors
 })
 
-const { data: users } = await useAsyncData('users-upsert', async () => {
+await useAsyncData('users-upsert', async () => {
   await client.from('users').upsert(
     {
       uuid: slackUserInfo.userId,
@@ -57,16 +63,27 @@ const { data: users } = await useAsyncData('users-upsert', async () => {
     { onConflict: 'uuid' },
   )
 
-  const { data } = await client.from('users').select()
-  return data
+  const { data } = await client.from('users').select() as { data: registeredUserInfo[] }
+  if (!isNull(data)) {
+    const transformedData = data.map(userInfo => ({
+      uuid: userInfo.uuid,
+      name: userInfo.name,
+      slackMemberId: userInfo.slack_member_id,
+      slackProfileImage: userInfo.slack_profile_image,
+    }))
+    uiStore.updateRegisteredUserInfo(transformedData)
+  }
 })
+
+/** 登録済みのユーザー情報 */
+const registeredUserInfo = uiStore.registeredUserInfo.value
 
 /** ドロップダウンの開閉 */
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-/** 洗濯中のユーザー情報取得 */
+/** 選択中のユーザー情報取得 */
 const checkUser = (name: string, memberId: string) => {
   if (selectedUsers.value.has(name)) {
     selectedUsers.value.delete(name)
@@ -149,14 +166,14 @@ const submitMessage = async () => {
         class="HomeBody__DropDownWrapper"
       >
         <div
-          v-for="user in users"
+          v-for="user in registeredUserInfo"
           :key="user.uuid"
           class="HomeBody__DropDown"
-          @click="checkUser(user.name, user.slack_member_id)"
+          @click="checkUser(user.name, user.slackMemberId)"
         >
           <div class="HomeBody__UserInfoDelimiter">
             <img
-              :src="user.slack_profile_image"
+              :src="user.slackProfileImage"
               alt="slackのプロフィール画像"
               class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--Radius"
             >
