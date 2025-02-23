@@ -22,9 +22,29 @@
     }
 
     &__Image{
-        width: 16px;
-        height: 16px;
-        transition: transform 0.3s;
+
+        &--Small {
+            width: 15px;
+            height: 15px;
+        }
+
+        &--Medium {
+            width: 20px;
+            height: 20px;
+        }
+
+        &--Large {
+            width: 30px;
+            height: 30px;
+        }
+
+        &--Radius {
+            border-radius: 50%;
+        }
+
+        &--Transition {
+            transition: transform 0.3s;
+        }
 
         &--Rotate {
             transform: rotate(180deg);
@@ -46,6 +66,7 @@
         border-radius: 4px;
         padding: 8px;
         display: flex;
+        align-items: center;
         justify-content: space-between;
 
         &:hover {
@@ -97,7 +118,7 @@
             cursor: not-allowed;
 
             &:hover {
-                background-color: grey;
+                background-color: #fff;
             }
         }
     }

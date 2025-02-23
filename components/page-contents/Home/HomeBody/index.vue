@@ -134,10 +134,16 @@ const submitMessage = async () => {
         <img
           src="@/assets/img/select-icon.png"
           alt="選択用の画像"
-          class="HomeBody__Image"
+          class="HomeBody__Image HomeBody__Image--Small HomeBody__Image--Transition"
           :class="{ 'HomeBody__Image--Rotate': isDropdownOpen }"
         >
       </button>
+      <p
+        v-if="validationResult.to"
+        class="HomeBody__ErrorMessage"
+      >
+        {{ validationResult.to[0] }}
+      </p>
       <div
         v-if="isDropdownOpen"
         class="HomeBody__DropDownWrapper"
@@ -152,7 +158,7 @@ const submitMessage = async () => {
             <img
               :src="user.slack_profile_image"
               alt="slackのプロフィール画像"
-              class="HomeBody__Image"
+              class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--Radius"
             >
             <span class="HomeBody__Item">{{ user.name }}</span>
           </div>
@@ -160,16 +166,10 @@ const submitMessage = async () => {
             v-if="selectedUsers.has(user.name)"
             src="@/assets/img/check-icon.png"
             alt="チェック画像"
-            class="HomeBody__Image"
+            class="HomeBody__Image HomeBody__Image--Medium"
           >
         </div>
       </div>
-      <p
-        v-if="validationResult.to"
-        class="HomeBody__ErrorMessage"
-      >
-        {{ validationResult.to[0] }}
-      </p>
     </div>
     <div class="HomeBody__TextAreaWrapper">
       <textarea
@@ -197,7 +197,7 @@ const submitMessage = async () => {
         <img
           src="@/assets/img/love-icon.png"
           alt="いいね画像"
-          class="HomeBody__Image"
+          class="HomeBody__Image HomeBody__Image--Medium"
         >
         {{ successMessage }}
       </template>
