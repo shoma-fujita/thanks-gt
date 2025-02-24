@@ -28,6 +28,14 @@ export type recipientUserInfo = {
   slackProfileImage: string
 }
 
+/** 思い出の写真 */
+export type memoryImage = {
+  /** path */
+  path: string
+  /** 写真 URL */
+  signedUrl: string
+}
+
 /** ホーム画面 UI State */
 export type UiState = {
   /** DB に登録されているユーザー情報（削除されていない */
@@ -36,4 +44,6 @@ export type UiState = {
   senderUserInfo: senderUserInfo | null
   /** 感謝メッセージを受け取る人の情報 */
   recipientUserInfo: recipientUserInfo[]
+  /** 思い出の写真 */
+  memoryImage: memoryImage[]
 }

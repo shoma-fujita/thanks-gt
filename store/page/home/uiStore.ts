@@ -1,4 +1,4 @@
-import type { UiState, registeredUserInfo, senderUserInfo, recipientUserInfo } from './types'
+import type { UiState, registeredUserInfo, senderUserInfo, recipientUserInfo, memoryImage } from './types'
 
 /**
  * ホーム画面の UI Store
@@ -11,6 +11,7 @@ export const pageUiStore = () => {
       registeredUserInfo: null,
       senderUserInfo: null,
       recipientUserInfo: [],
+      memoryImage: [],
     }
   })
   /** Getters */
@@ -26,6 +27,10 @@ export const pageUiStore = () => {
     /** 感謝メッセージを受け取る人の情報 */
     recipientUserInfo: computed<recipientUserInfo[]>(() => {
       return _state.value.recipientUserInfo
+    }),
+    /** 思い出の写真 */
+    memoryImage: computed<memoryImage[]>(() => {
+      return _state.value.memoryImage
     }),
   }
   /** Actions */
@@ -65,6 +70,20 @@ export const pageUiStore = () => {
       else {
         _state.value.recipientUserInfo.push(recipientUserInfo)
       }
+    },
+    /**
+     * 感謝メッセージを受け取る人の情報の削除
+     */
+    clearRecipientUserInfo(): void {
+      _state.value.recipientUserInfo = []
+    },
+    /**
+     * 思い出の写真の更新
+     *
+     * @param {memoryImage[]} memoryImage 思い出の写真
+     */
+    updateMemoryImage(memoryImage: memoryImage[]): void {
+      _state.value.memoryImage = memoryImage
     },
   }
   return {

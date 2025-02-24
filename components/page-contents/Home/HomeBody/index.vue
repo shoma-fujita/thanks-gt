@@ -29,6 +29,12 @@ const isLoading = ref<boolean>(false)
 /** 送信成功メッセージ */
 const successMessage = ref<'感謝を伝える' | '感謝を伝えました'>('感謝を伝える')
 
+/** Storage に保管している fileNames */
+const fileNames = [
+  'item.jpg',
+  'item2.jpg',
+]
+
 /** エラーメッセージの状態 */
 const errorMessages = ref<{ recipientUserInfo: string, thanksMessage: string }>({
   recipientUserInfo: '',
@@ -74,6 +80,17 @@ await useAsyncData('users-upsert', async () => {
   uiStore.updateSenderUserInfo({ slackName: slackUserInfo.slackName, slackMemberId: slackUserInfo.memberId })
 })
 
+await useAsyncData('fetch-memory-image', async () => {
+  const { data } = await client.storage.from('memory-image').createSignedUrls(fileNames, 60 * 60)
+  if (!isNull(data)) {
+    const transformedData = data.map((item: { path: string | null, signedUrl: string }) => ({
+      path: item.path ?? item.signedUrl,
+      signedUrl: item.signedUrl,
+    }))
+    uiStore.updateMemoryImage(transformedData)
+  }
+})
+
 /** 登録済みのユーザー情報 */
 const registeredUserInfo = uiStore.registeredUserInfo.value
 
@@ -83,6 +100,9 @@ const senderUserInfo = uiStore.senderUserInfo.value
 /** 選択中のユーザー情報 */
 const recipientUserInfo = uiStore.recipientUserInfo
 
+/** 思い出の写真 */
+const memoryImages = uiStore.memoryImage
+
 /** ドロップダウンの開閉 */
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
@@ -91,6 +111,13 @@ const toggleDropdown = () => {
 /** ユーザーの選択 */
 const selectUser = (slackName: string, slackMemberId: string, slackProfileImage: string) => {
   uiStore.updateRecipientUserInfo({ slackName, slackMemberId, slackProfileImage })
+}
+
+/** 選択済みのユーザーかどうかの判定 */
+const isSelectedUser = (slackMemberId: string) => {
+  return recipientUserInfo.value.some((userInfo) => {
+    return userInfo.slackMemberId === slackMemberId
+  })
 }
 
 /** メッセージの送信 */
@@ -128,6 +155,9 @@ const submitMessage = async () => {
   })
 
   isLoading.value = false
+  uiStore.clearRecipientUserInfo()
+  message.value = ''
+  isDropdownOpen.value = false
   successMessage.value = '感謝を伝えました'
   setTimeout(() => {
     successMessage.value = '感謝を伝える'
@@ -137,91 +167,115 @@ const submitMessage = async () => {
 
 <template>
   <div class="HomeBody">
-    <h1 class="HomeBody__Title">
-      誰に感謝を伝えますか？
-    </h1>
-    <div class="HomeBody__DropDownContent">
-      <button
-        class="HomeBody__DropDown"
-        type="button"
-        @click="toggleDropdown"
+    <div class="HomeBody__SecondaryContent">
+      <img
+        v-for="(memoryImage, index) in memoryImages"
+        :key="memoryImage.path"
+        :src="memoryImage.signedUrl"
+        class="HomeBody__Image HomeBody__Image--Huge HomeBody__Image--Slide HomeBody__Image--SmallRadius"
+        :style="{ '--index': index }"
       >
-        <template v-if="recipientUserInfo[0]">
-          <div
-            v-for="recipientUser in recipientUserInfo"
-            :key="recipientUser.slackMemberId"
-            class="HomeBody__DropDownUserInfoDelimiter"
-          >
-            <img
-              :src="recipientUser.slackProfileImage"
-              alt="slackのプロフィール画像"
-              class="HomeBody__Image HomeBody__Image--Medium HomeBody__Image--Radius"
-            >
-            <span class="HomeBody__DropDownItem">{{ recipientUser.slackName }}</span>
-            <img
-              src="@/assets/img/cancel-icon.png"
-              alt="キャンセルの画像"
-              class="HomeBody__DropDownImage HomeBody__Image HomeBody__Image--Medium HomeBody__Image--Radius"
-              @click.stop="selectUser(recipientUser.slackName, recipientUser.slackMemberId, recipientUser.slackProfileImage)"
-            >
-          </div>
-        </template>
-        <template v-else>
-          <span class="HomeBody__DropDownItem">相手を選択</span>
-        </template>
-      </button>
-      <p class="HomeBody__ErrorMessage">
-        {{ errorMessages.recipientUserInfo }}
-      </p>
-      <div
-        v-if="isDropdownOpen"
-        class="HomeBody__SelectContent"
-      >
-        <div
-          v-for="user in registeredUserInfo"
-          :key="user.uuid"
-          class="HomeBody__SelectItemList"
-          @click="selectUser(user.name, user.slackMemberId, user.slackProfileImage)"
+    </div>
+    <div class="HomeBody__MainContent">
+      <h1 class="HomeBody__Title">
+        感謝送信窓口
+      </h1>
+      <div class="HomeBody__DropDownContent">
+        <button
+          class="HomeBody__DropDown"
+          type="button"
+          @click="toggleDropdown"
         >
-          <div class="HomeBody__SelectUserInfoDelimiter">
-            <img
-              :src="user.slackProfileImage"
-              alt="slackのプロフィール画像"
-              class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--Radius"
+          <template v-if="recipientUserInfo[0]">
+            <div
+              v-for="recipientUser in recipientUserInfo"
+              :key="recipientUser.slackMemberId"
+              class="HomeBody__DropDownUserInfoDelimiter"
             >
-            <span class="HomeBody__SelectItem">{{ user.name }}</span>
+              <img
+                :src="recipientUser.slackProfileImage"
+                alt="slackのプロフィール画像"
+                class="HomeBody__Image HomeBody__Image--Medium HomeBody__Image--MediumRadius"
+              >
+              <span class="HomeBody__DropDownItem">{{ recipientUser.slackName }}</span>
+              <img
+                src="@/assets/img/cancel-icon.png"
+                alt="キャンセルの画像"
+                class="HomeBody__DropDownImage HomeBody__Image HomeBody__Image--Medium HomeBody__Image--MediumRadius"
+                @click.stop="selectUser(recipientUser.slackName, recipientUser.slackMemberId, recipientUser.slackProfileImage)"
+              >
+            </div>
+          </template>
+          <template v-else>
+            <span class="HomeBody__DropDownItem">相手を選択</span>
+          </template>
+        </button>
+        <p
+          v-if="errorMessages.recipientUserInfo"
+          class="HomeBody__ErrorMessage"
+          :class="{ 'HomeBody__ErrorMessage--BottomMargin': isDropdownOpen }"
+        >
+          {{ errorMessages.recipientUserInfo }}
+        </p>
+        <div
+          v-if="isDropdownOpen"
+          class="HomeBody__SelectContent"
+        >
+          <div
+            v-for="user in registeredUserInfo"
+            :key="user.uuid"
+            class="HomeBody__SelectItemList"
+            @click="selectUser(user.name, user.slackMemberId, user.slackProfileImage)"
+          >
+            <div class="HomeBody__SelectUserInfoDelimiter">
+              <img
+                :src="user.slackProfileImage"
+                alt="slackのプロフィール画像"
+                class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--MediumRadius"
+              >
+              <span class="HomeBody__SelectItem">{{ user.name }}</span>
+            </div>
+            <img
+              v-if="isSelectedUser(user.slackMemberId)"
+              src="@/assets/img/check-icon.png"
+              alt="選択済みの画像"
+              class="HomeBody__Image HomeBody__Image--Medium"
+            >
           </div>
         </div>
       </div>
-    </div>
-    <div class="HomeBody__TextContent">
-      <textarea
-        v-model="message"
-        class="HomeBody__Text"
-        placeholder="感謝の言葉を入力してください"
-      />
-    </div>
-    <p class="HomeBody__ErrorMessage">
-      {{ errorMessages.thanksMessage }}
-    </p>
-    <button
-      class="HomeBody__SubmitButton"
-      :disabled="isLoading"
-      :class="{ 'HomeBody__SubmitButton--Disabled': isLoading }"
-      @click="submitMessage"
-    >
-      <template v-if="isLoading">
-        送信中...
-      </template>
-      <template v-else>
-        <img
-          src="@/assets/img/love-icon.png"
-          alt="いいね画像"
-          class="HomeBody__Image HomeBody__Image--Medium"
+      <div class="HomeBody__TextContent">
+        <textarea
+          v-model="message"
+          class="HomeBody__Text"
+          placeholder="感謝の言葉を入力してください"
+        />
+        <p
+          v-if="errorMessages.thanksMessage"
+          class="HomeBody__ErrorMessage"
         >
-        {{ successMessage }}
-      </template>
-    </button>
+          {{ errorMessages.thanksMessage }}
+        </p>
+      </div>
+      <button
+        class="HomeBody__SubmitButton"
+        :disabled="isLoading"
+        :class="{ 'HomeBody__SubmitButton--Disabled': isLoading }"
+        @click="submitMessage"
+      >
+        <template v-if="isLoading">
+          送信中...
+        </template>
+        <template v-else>
+          <img
+            src="@/assets/img/love-icon.png"
+            alt="いいね画像"
+            class="HomeBody__Image HomeBody__Image--Medium"
+          >
+          {{ successMessage }}
+        </template>
+      </button>
+    </div>
   </div>
 </template>
 

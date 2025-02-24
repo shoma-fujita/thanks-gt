@@ -1,8 +1,20 @@
 .HomeBody {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     font-size: 14px;
+    gap: 440px;
+    padding-top: 80px;
+
+    &__MainContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+
+    &__Title {
+        margin: 0;
+    }
 
     &__DropDown {
         cursor: pointer;
@@ -12,7 +24,6 @@
         padding: 12px 16px;
         display: flex;
         width: 250px;
-        margin-bottom: 16px;
         flex-direction: column;
         gap: 12px;
         text-align: left;
@@ -43,7 +54,6 @@
     }
 
     &__Image{
-
         &--Small {
             width: 15px;
             height: 15px;
@@ -59,9 +69,19 @@
             height: 30px;
         }
 
-        &--Radius {
+        &--Huge {
+            max-width: 400px;
+            max-height: 400px;
+        }
+
+        &--SmallRadius {
+            border-radius: 30%;
+        }
+
+        &--MediumRadius {
             border-radius: 50%;
         }
+    
 
         &--Transition {
             transition: transform 0.3s;
@@ -69,6 +89,25 @@
 
         &--Rotate {
             transform: rotate(180deg);
+        }
+
+        &--Slide {
+            object-fit: contain;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fade 10s infinite;
+            animation-delay: calc(5s * var(--index));
+
+            @keyframes fade {
+                0% { opacity: 0; }
+                10% { opacity: 1; }
+                40% { opacity: 1; }
+                50% { opacity: 0; }
+                100% { opacity: 0; }
+              }
         }
     }
 
@@ -79,7 +118,6 @@
         flex-direction: column;
         gap: 8px;
         padding: 8px;
-        margin-bottom: 18px;
     }
 
     &__SelectItemList {
@@ -102,10 +140,6 @@
 
     &__SelectItem {
         margin-left: 16px;
-    }
-
-    &__TextContent {
-        margin-bottom: 16px;
     }
 
     &__Text {
@@ -146,8 +180,37 @@
 
     &__ErrorMessage {
         color: red;
-        margin-top: 0;
         display: flex;
         justify-content: center;
+        margin: 24px 0 0;
+
+        &--BottomMargin{
+            margin-bottom: 24px;
+        }
     }
 }
+
+// .slide {
+//     position: absolute;
+//     width: 100%;
+//     height: 100%;
+//     object-fit: cover;
+//     opacity: 0;
+//     animation: fade 10s infinite;
+//   }
+
+//   .slide:nth-child(1) {
+//     animation-delay: 0s;
+//   }
+//   .slide:nth-child(2) {
+//     animation-delay: 5s;
+//   }
+  
+//   /* 画像のフェードイン・フェードアウトのアニメーション */
+//   @keyframes fade {
+//     0% { opacity: 0; }
+//     10% { opacity: 1; }
+//     40% { opacity: 1; }
+//     50% { opacity: 0; }
+//     100% { opacity: 0; }
+//   }
