@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'client',
+  layout: 'client-default',
 })
 </script>
 
@@ -8,7 +8,6 @@ definePageMeta({
   <div class="Top">
     <h1>Top Page</h1>
     <p>Welcome to the top page</p>
-    <NuxtLink to="/login">ログインページへ</NuxtLink>
-    <NuxtLink to="/home">ホームページへ</NuxtLink>
+    <NuxtLink to="/home">ホーム画面へ</NuxtLink>
   </div>
 </template>

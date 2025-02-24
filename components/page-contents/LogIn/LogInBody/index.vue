@@ -19,7 +19,7 @@ const signInWithSlack = async () => {
 <template>
   <div class="LogInBody">
     <h1 class="LogInBody__Title">
-      LogIn Page
+      ログイン画面
     </h1>
     <button
       class="LogInBody__Button"

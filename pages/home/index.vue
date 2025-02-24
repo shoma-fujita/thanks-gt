@@ -2,7 +2,7 @@
 import Container from '@/components/page-contents/Home/Container/index.vue'
 
 definePageMeta({
-  layout: 'client',
+  layout: 'client-default',
 })
 </script>
 

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import AppHeader from '@/components/layout/AppHeader/index.vue'
+import ClientHeader from '@/components/layout/ClientHeader/index.vue'
 import AppFooter from '@/components/layout/AppFooter/index.vue'
 </script>
 
 <template>
-  <div class="Layouts">
-    <AppHeader class="Layouts__Header" />
-    <div class="Layouts__Main">
+  <div class="Client">
+    <ClientHeader class="Client__Header" />
+    <div class="Client__Main">
       <slot />
     </div>
-    <AppFooter class="Layouts__Footer" />
+    <AppFooter class="Client__Footer" />
   </div>
 </template>
 
