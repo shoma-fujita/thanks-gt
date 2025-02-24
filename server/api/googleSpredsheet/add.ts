@@ -4,7 +4,6 @@ import { JWT } from 'google-auth-library'
 
 export default defineEventHandler(async (event) => {
   try {
-    console.log('event:', event)
     const config = useRuntimeConfig()
     // リクエストボディから文字列を取得
     const body = await readBody(event)

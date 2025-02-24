@@ -20,12 +20,6 @@ const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
 /** ドロップダウンが開いているかどうか */
 const isDropdownOpen = ref<boolean>(false)
 
-/** 選択されたユーザー */
-const selectedUsers = ref(new Set<string>())
-
-/** 選択されたユーザーのメンバー ID */
-const selectedUsersMemberIds = ref(new Set<string>())
-
 /** 感謝メッセージ */
 const message = ref<string>('')
 
@@ -35,22 +29,24 @@ const isLoading = ref<boolean>(false)
 /** 送信成功メッセージ */
 const successMessage = ref<'感謝を伝える' | '感謝を伝えました'>('感謝を伝える')
 
-const validationSchema = z.object({
-  to: z.string().refine(value => value !== '相手を選択', {
-    message: '相手を選択してください',
-  }),
-  message: z.string().min(1, {
-    message: '感謝の言葉を入力してください',
-  }),
+/** エラーメッセージの状態 */
+const errorMessages = ref<{ recipientUserInfo: string, thanksMessage: string }>({
+  recipientUserInfo: '',
+  thanksMessage: '',
 })
 
-const validationResult = computed(() => {
-  const result = validationSchema.safeParse({
-    to: selectedUsersText.value,
-    message: message.value,
-  })
-  return result.success ? {} : result.error.flatten().fieldErrors
+// recipientUser のスキーマ
+const recipientUserInfoSchema = z.object({
+  slackName: z.string(),
+  slackMemberId: z.string(),
+  slackProfileImage: z.string(),
 })
+
+/** バリデーションスキーマの定義 */
+const validationSchemas = {
+  recipientUserInfo: z.array(recipientUserInfoSchema).nonempty({ message: '感謝を伝える相手を選択してください' }),
+  thanksMessage: z.string().min(1, { message: '感謝メッセージを入力してください' }),
+}
 
 await useAsyncData('users-upsert', async () => {
   await client.from('users').upsert(
@@ -71,55 +67,58 @@ await useAsyncData('users-upsert', async () => {
       slackMemberId: userInfo.slack_member_id,
       slackProfileImage: userInfo.slack_profile_image,
     }))
+    // 登録済みのユーザー情報を更新
     uiStore.updateRegisteredUserInfo(transformedData)
   }
+  // ログイン中のユーザー情報を更新
+  uiStore.updateSenderUserInfo({ slackName: slackUserInfo.slackName, slackMemberId: slackUserInfo.memberId })
 })
 
 /** 登録済みのユーザー情報 */
 const registeredUserInfo = uiStore.registeredUserInfo.value
+
+/** 送信者のユーザー情報 */
+const senderUserInfo = uiStore.senderUserInfo.value
+
+/** 選択中のユーザー情報 */
+const recipientUserInfo = uiStore.recipientUserInfo
 
 /** ドロップダウンの開閉 */
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-/** 選択中のユーザー情報取得 */
-const checkUser = (name: string, memberId: string) => {
-  if (selectedUsers.value.has(name)) {
-    selectedUsers.value.delete(name)
-    selectedUsersMemberIds.value.delete(memberId)
-  }
-  else {
-    selectedUsers.value.add(name)
-    selectedUsersMemberIds.value.add(memberId)
-  }
+/** ユーザーの選択 */
+const selectUser = (slackName: string, slackMemberId: string, slackProfileImage: string) => {
+  uiStore.updateRecipientUserInfo({ slackName, slackMemberId, slackProfileImage })
 }
-
-/** 選択されたユーザーのテキスト */
-const selectedUsersText = computed<string>(() =>
-  selectedUsers.value.size ? Array.from(selectedUsers.value).join(', ') : '相手を選択',
-)
-
-/** 選択されたユーザーのメンバー ID のテキスト */
-const selectedUsersMemberIdsText = computed<string>(() =>
-  selectedUsersMemberIds.value.size ? Array.from(selectedUsersMemberIds.value).join(', ') : '',
-)
 
 /** メッセージの送信 */
 const submitMessage = async () => {
-  if (!validationSchema.safeParse({
-    to: selectedUsersText.value,
-    message: message.value,
-  }).success) {
+  const validationResults = {
+    recipientUserInfo: validationSchemas.recipientUserInfo.safeParse(recipientUserInfo.value),
+    thanksMessage: validationSchemas.thanksMessage.safeParse(message.value),
+  }
+  errorMessages.value = {
+    recipientUserInfo: validationResults.recipientUserInfo.success ? '' : validationResults.recipientUserInfo.error.errors[0].message,
+    thanksMessage: validationResults.thanksMessage.success ? '' : validationResults.thanksMessage.error.errors[0].message,
+  }
+  if (errorMessages.value.recipientUserInfo || errorMessages.value.thanksMessage) {
     return
   }
   isLoading.value = true
 
+  /** 選択中のユーザー名の文字列 */
+  const recipientUserNameText = uiStore.recipientUserInfo.value.map(user => user.slackName).join(', ')
+
+  /** 選択中のユーザーのメンバー ID の文字列 */
+  const recipientUserMemberIdText = uiStore.recipientUserInfo.value.map(user => user.slackMemberId).join(', ')
+
   const payload = {
-    from: slackUserInfo.slackName,
-    fromMemberId: slackUserInfo.memberId,
-    to: selectedUsersText.value,
-    toMemberIds: selectedUsersMemberIdsText.value,
+    from: senderUserInfo?.slackName,
+    fromMemberId: senderUserInfo?.slackMemberId,
+    to: recipientUserNameText,
+    toMemberIds: recipientUserMemberIdText,
     message: message.value,
   }
 
@@ -141,66 +140,70 @@ const submitMessage = async () => {
     <h1 class="HomeBody__Title">
       誰に感謝を伝えますか？
     </h1>
-    <div class="HomeBody__SelectWrapper">
+    <div class="HomeBody__DropDownContent">
       <button
-        class="HomeBody__SelectButton"
+        class="HomeBody__DropDown"
         type="button"
         @click="toggleDropdown"
       >
-        <span class="HomeBody__Text">{{ selectedUsersText }}</span>
-        <img
-          src="@/assets/img/select-icon.png"
-          alt="選択用の画像"
-          class="HomeBody__Image HomeBody__Image--Small HomeBody__Image--Transition"
-          :class="{ 'HomeBody__Image--Rotate': isDropdownOpen }"
-        >
+        <template v-if="recipientUserInfo[0]">
+          <div
+            v-for="recipientUser in recipientUserInfo"
+            :key="recipientUser.slackMemberId"
+            class="HomeBody__DropDownUserInfoDelimiter"
+          >
+            <img
+              :src="recipientUser.slackProfileImage"
+              alt="slackのプロフィール画像"
+              class="HomeBody__Image HomeBody__Image--Medium HomeBody__Image--Radius"
+            >
+            <span class="HomeBody__DropDownItem">{{ recipientUser.slackName }}</span>
+            <img
+              src="@/assets/img/cancel-icon.png"
+              alt="キャンセルの画像"
+              class="HomeBody__DropDownImage HomeBody__Image HomeBody__Image--Medium HomeBody__Image--Radius"
+              @click.stop="selectUser(recipientUser.slackName, recipientUser.slackMemberId, recipientUser.slackProfileImage)"
+            >
+          </div>
+        </template>
+        <template v-else>
+          <span class="HomeBody__DropDownItem">相手を選択</span>
+        </template>
       </button>
-      <p
-        v-if="validationResult.to"
-        class="HomeBody__ErrorMessage"
-      >
-        {{ validationResult.to[0] }}
+      <p class="HomeBody__ErrorMessage">
+        {{ errorMessages.recipientUserInfo }}
       </p>
       <div
         v-if="isDropdownOpen"
-        class="HomeBody__DropDownWrapper"
+        class="HomeBody__SelectContent"
       >
         <div
           v-for="user in registeredUserInfo"
           :key="user.uuid"
-          class="HomeBody__DropDown"
-          @click="checkUser(user.name, user.slackMemberId)"
+          class="HomeBody__SelectItemList"
+          @click="selectUser(user.name, user.slackMemberId, user.slackProfileImage)"
         >
-          <div class="HomeBody__UserInfoDelimiter">
+          <div class="HomeBody__SelectUserInfoDelimiter">
             <img
               :src="user.slackProfileImage"
               alt="slackのプロフィール画像"
               class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--Radius"
             >
-            <span class="HomeBody__Item">{{ user.name }}</span>
+            <span class="HomeBody__SelectItem">{{ user.name }}</span>
           </div>
-          <img
-            v-if="selectedUsers.has(user.name)"
-            src="@/assets/img/check-icon.png"
-            alt="チェック画像"
-            class="HomeBody__Image HomeBody__Image--Medium"
-          >
         </div>
       </div>
     </div>
-    <div class="HomeBody__TextAreaWrapper">
+    <div class="HomeBody__TextContent">
       <textarea
         v-model="message"
-        class="HomeBody__TextArea"
+        class="HomeBody__Text"
         placeholder="感謝の言葉を入力してください"
       />
-      <p
-        v-if="validationResult.message"
-        class="HomeBody__ErrorMessage"
-      >
-        {{ validationResult.message[0] }}
-      </p>
     </div>
+    <p class="HomeBody__ErrorMessage">
+      {{ errorMessages.thanksMessage }}
+    </p>
     <button
       class="HomeBody__SubmitButton"
       :disabled="isLoading"

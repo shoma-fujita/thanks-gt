@@ -10,8 +10,7 @@ export const pageUiStore = () => {
     return {
       registeredUserInfo: null,
       senderUserInfo: null,
-      recipientUserInfo: null,
-      thanksMessage: null,
+      recipientUserInfo: [],
     }
   })
   /** Getters */
@@ -25,12 +24,8 @@ export const pageUiStore = () => {
       return _state.value.senderUserInfo
     }),
     /** 感謝メッセージを受け取る人の情報 */
-    recipientUserInfo: computed<recipientUserInfo | null>(() => {
+    recipientUserInfo: computed<recipientUserInfo[]>(() => {
       return _state.value.recipientUserInfo
-    }),
-    /** 感謝メッセージ */
-    thanksMessage: computed<string | null>(() => {
-      return _state.value.thanksMessage
     }),
   }
   /** Actions */
@@ -57,15 +52,19 @@ export const pageUiStore = () => {
      * @param {recipientUserInfo} recipientUserInfo 感謝メッセージを受け取る人の情報
      */
     updateRecipientUserInfo(recipientUserInfo: recipientUserInfo): void {
-      _state.value.recipientUserInfo = recipientUserInfo
-    },
-    /**
-     * 感謝メッセージの更新
-     *
-     * @param {string} message 感謝メッセージ
-     */
-    updateConditionName(message: string): void {
-      _state.value.thanksMessage = message
+      const isExist = _state.value.recipientUserInfo.some(
+        (user) => {
+          return user.slackMemberId === recipientUserInfo.slackMemberId
+        },
+      )
+      if (isExist) {
+        _state.value.recipientUserInfo = _state.value.recipientUserInfo.filter((user) => {
+          return user.slackMemberId !== recipientUserInfo.slackMemberId
+        })
+      }
+      else {
+        _state.value.recipientUserInfo.push(recipientUserInfo)
+      }
     },
   }
   return {

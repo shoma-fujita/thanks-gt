@@ -24,6 +24,8 @@ export type recipientUserInfo = {
   slackName: string
   /** slack のメンバー ID */
   slackMemberId: string
+  /** slack のプロフィール画像 URL */
+  slackProfileImage: string
 }
 
 /** ホーム画面 UI State */
@@ -33,7 +35,5 @@ export type UiState = {
   /** 感謝メッセージの送信者の情報 */
   senderUserInfo: senderUserInfo | null
   /** 感謝メッセージを受け取る人の情報 */
-  recipientUserInfo: recipientUserInfo | null
-  /** 感謝メッセージ */
-  thanksMessage: string | null
+  recipientUserInfo: recipientUserInfo[]
 }

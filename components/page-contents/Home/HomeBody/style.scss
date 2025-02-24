@@ -4,17 +4,38 @@
     align-items: center;
     font-size: 14px;
 
-    &__SelectButton {
+    &__DropDown {
         cursor: pointer;
         background-color: white;
         border: 1px solid #e5e7eb;
         border-radius: 8px;
         padding: 12px 16px;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 300px;
+        width: 250px;
         margin-bottom: 16px;
+        flex-direction: column;
+        gap: 12px;
+        text-align: left;
+
+        &:hover {
+            background-color: #f0eded;
+        }
+    }
+
+    &__DropDownUserInfoDelimiter {
+        display: flex;
+        align-items: center;
+        border: 1px solid #e5e7eb;
+        padding: 8px;
+        border-radius: 8px;
+        background-color: white;
+        max-width: fit-content;
+        gap: 8px;
+    }
+
+    &__DropDownImage {
+        z-index: 1;
+        padding: 4px;
 
         &:hover {
             background-color: #f0eded;
@@ -51,7 +72,7 @@
         }
     }
 
-    &__DropDownWrapper {
+    &__SelectContent {
         border: 1px solid #e5e7eb;
         border-radius: 8px;
         display: flex;
@@ -61,7 +82,7 @@
         margin-bottom: 18px;
     }
 
-    &__DropDown {
+    &__SelectItemList {
         cursor: pointer;
         border-radius: 4px;
         padding: 8px;
@@ -74,20 +95,20 @@
         }
     }
 
-    &__UserInfoDelimiter {
+    &__SelectUserInfoDelimiter {
         display: flex;
         align-items: center;
     }
 
-    &__Item {
+    &__SelectItem {
         margin-left: 16px;
     }
 
-    &__TextAreaWrapper {
+    &__TextContent {
         margin-bottom: 16px;
     }
 
-    &__TextArea {
+    &__Text {
         width: 300px;
         height: 200px;
         border: 1px solid #e5e7eb;
@@ -125,6 +146,7 @@
 
     &__ErrorMessage {
         color: red;
+        margin-top: 0;
         display: flex;
         justify-content: center;
     }
