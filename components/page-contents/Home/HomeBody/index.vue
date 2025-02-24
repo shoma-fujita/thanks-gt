@@ -20,6 +20,12 @@ const slackUserInfo = commonAuthApi.slackUserInfoOrThrow()
 /** ドロップダウンが開いているかどうか */
 const isDropdownOpen = ref<boolean>(false)
 
+/** ドロップダウンの参照 */
+const dropdownRef = ref<HTMLElement | null>(null)
+
+/** ユーザー選択の参照 */
+const selectContentRef = ref<HTMLElement | null>(null)
+
 /** 感謝メッセージ */
 const message = ref<string>('')
 
@@ -27,7 +33,7 @@ const message = ref<string>('')
 const isLoading = ref<boolean>(false)
 
 /** 送信成功メッセージ */
-const successMessage = ref<'感謝を伝える' | '感謝を伝えました'>('感謝を伝える')
+const successMessage = ref<'ありがとうを伝える' | 'ありがとうを伝えました'>('ありがとうを伝える')
 
 /** Storage に保管している fileNames */
 const fileNames = [
@@ -108,6 +114,18 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
+/** ドロップダウン外のクリックを検知して閉じる処理 */
+const closeDropdownWhenClickedOutside = (event: MouseEvent) => {
+  if (
+    (dropdownRef.value && dropdownRef.value.contains(event.target as Node))
+    || (selectContentRef.value && selectContentRef.value.contains(event.target as Node))
+  ) {
+    return
+  }
+
+  isDropdownOpen.value = false
+}
+
 /** ユーザーの選択 */
 const selectUser = (slackName: string, slackMemberId: string, slackProfileImage: string) => {
   uiStore.updateRecipientUserInfo({ slackName, slackMemberId, slackProfileImage })
@@ -158,11 +176,19 @@ const submitMessage = async () => {
   uiStore.clearRecipientUserInfo()
   message.value = ''
   isDropdownOpen.value = false
-  successMessage.value = '感謝を伝えました'
+  successMessage.value = 'ありがとうを伝えました'
   setTimeout(() => {
-    successMessage.value = '感謝を伝える'
+    successMessage.value = 'ありがとうを伝える'
   }, 3000)
 }
+
+onMounted(() => {
+  document.addEventListener('click', closeDropdownWhenClickedOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdownWhenClickedOutside)
+})
 </script>
 
 <template>
@@ -177,11 +203,19 @@ const submitMessage = async () => {
       >
     </div>
     <div class="HomeBody__MainContent">
-      <h1 class="HomeBody__Title">
-        感謝送信窓口
-      </h1>
+      <div class="HomeBody__MainContentHead">
+        <img
+          src="@/assets/img/cherry-blossoms-icon.png"
+          alt="桜の画像"
+          class="HomeBody__Image HomeBody__Image--Large"
+        >
+        <h1 class="HomeBody__Title">
+          ありがとうを伝える
+        </h1>
+      </div>
       <div class="HomeBody__DropDownContent">
         <button
+          ref="dropdownRef"
           class="HomeBody__DropDown"
           type="button"
           @click="toggleDropdown"
@@ -191,6 +225,7 @@ const submitMessage = async () => {
               v-for="recipientUser in recipientUserInfo"
               :key="recipientUser.slackMemberId"
               class="HomeBody__DropDownUserInfoDelimiter"
+              @click.stop
             >
               <img
                 :src="recipientUser.slackProfileImage"
@@ -219,6 +254,7 @@ const submitMessage = async () => {
         </p>
         <div
           v-if="isDropdownOpen"
+          ref="selectContentRef"
           class="HomeBody__SelectContent"
         >
           <div
@@ -248,7 +284,7 @@ const submitMessage = async () => {
         <textarea
           v-model="message"
           class="HomeBody__Text"
-          placeholder="感謝の言葉を入力してください"
+          placeholder="感謝の言葉を入力"
         />
         <p
           v-if="errorMessages.thanksMessage"
