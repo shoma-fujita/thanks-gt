@@ -213,19 +213,18 @@ onUnmounted(() => {
           ありがとうを伝える
         </h1>
       </div>
-      <div class="HomeBody__DropDownContent">
-        <button
-          ref="dropdownRef"
+      <div
+        class="HomeBody__DropDownContent"
+        :class="{ 'HomeBody--MediumMarginBottom': !isDropdownOpen && !errorMessages.recipientUserInfo }"
+      >
+        <div
           class="HomeBody__DropDown"
-          type="button"
-          @click="toggleDropdown"
         >
           <template v-if="recipientUserInfo[0]">
             <div
               v-for="recipientUser in recipientUserInfo"
               :key="recipientUser.slackMemberId"
               class="HomeBody__DropDownUserInfoDelimiter"
-              @click.stop
             >
               <img
                 :src="recipientUser.slackProfileImage"
@@ -241,49 +240,55 @@ onUnmounted(() => {
               >
             </div>
           </template>
-          <template v-else>
-            <span class="HomeBody__DropDownItem">相手を選択</span>
-          </template>
-        </button>
-        <p
-          v-if="errorMessages.recipientUserInfo"
-          class="HomeBody__ErrorMessage"
-          :class="{ 'HomeBody__ErrorMessage--BottomMargin': isDropdownOpen }"
-        >
-          {{ errorMessages.recipientUserInfo }}
-        </p>
-        <div
-          v-if="isDropdownOpen"
-          ref="selectContentRef"
-          class="HomeBody__SelectContent"
-        >
-          <div
-            v-for="user in registeredUserInfo"
-            :key="user.uuid"
-            class="HomeBody__SelectItemList"
-            @click="selectUser(user.name, user.slackMemberId, user.slackProfileImage)"
+          <button
+            ref="dropdownRef"
+            class="HomeBody__DropDownButton"
+            type="button"
+            @click="toggleDropdown"
           >
-            <div class="HomeBody__SelectUserInfoDelimiter">
-              <img
-                :src="user.slackProfileImage"
-                alt="slackのプロフィール画像"
-                class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--MediumRadius"
-              >
-              <span class="HomeBody__SelectItem">{{ user.name }}</span>
-            </div>
-            <img
-              v-if="isSelectedUser(user.slackMemberId)"
-              src="@/assets/img/check-icon.png"
-              alt="選択済みの画像"
-              class="HomeBody__Image HomeBody__Image--Medium"
-            >
-          </div>
+            相手を選択
+          </button>
         </div>
       </div>
+      <div
+        v-if="isDropdownOpen"
+        ref="selectContentRef"
+        class="HomeBody__SelectContent"
+        :class="{ 'HomeBody--MediumMarginBottom': !errorMessages.recipientUserInfo }"
+      >
+        <div
+          v-for="user in registeredUserInfo"
+          :key="user.uuid"
+          class="HomeBody__SelectItemList"
+          @click="selectUser(user.name, user.slackMemberId, user.slackProfileImage)"
+        >
+          <div class="HomeBody__SelectUserInfoDelimiter">
+            <img
+              :src="user.slackProfileImage"
+              alt="slackのプロフィール画像"
+              class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--MediumRadius"
+            >
+            <span class="HomeBody__SelectItem">{{ user.name }}</span>
+          </div>
+          <img
+            v-if="isSelectedUser(user.slackMemberId)"
+            src="@/assets/img/check-icon.png"
+            alt="選択済みの画像"
+            class="HomeBody__Image HomeBody__Image--Medium"
+          >
+        </div>
+      </div>
+      <p
+        v-if="errorMessages.recipientUserInfo"
+        class="HomeBody__ErrorMessage"
+      >
+        {{ errorMessages.recipientUserInfo }}
+      </p>
       <div class="HomeBody__TextContent">
         <textarea
           v-model="message"
           class="HomeBody__Text"
+          :class="{ 'HomeBody--MediumMarginBottom': !errorMessages.thanksMessage }"
           placeholder="感謝の言葉を入力"
         />
         <p
