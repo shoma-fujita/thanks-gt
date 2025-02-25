@@ -37,8 +37,10 @@ const successMessage = ref<'ありがとうを伝える' | 'ありがとうを�
 
 /** Storage に保管している fileNames */
 const fileNames = [
-  'item.jpg',
-  'item2.jpg',
+  'item',
+  'item2',
+  'item3',
+  'item4',
 ]
 
 /** エラーメッセージの状態 */
