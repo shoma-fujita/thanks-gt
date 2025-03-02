@@ -25,7 +25,7 @@ const signInWithSlack = async () => {
         alt="アプリケーションの画像"
       >
       <NuxtLink
-        to="/home"
+        to="/login"
         class="AppHeader__Link"
       >
         Thanks GT

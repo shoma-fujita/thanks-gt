@@ -29,7 +29,7 @@ const signOut = async () => {
         alt="アプリケーションの画像"
       >
       <NuxtLink
-        to="/home"
+        to="/"
         class="ClientHeader__Link"
       >
         Thanks GT
