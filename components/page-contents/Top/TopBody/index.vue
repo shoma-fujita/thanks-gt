@@ -173,7 +173,8 @@ const submitMessage = async () => {
     message: message.value,
   }
 
-  commonGoogleSpreadSheetsApi.addThanksInfoToGoogleSpreadSheets(payload)
+  // Google Spread Sheets に感謝情報を追加
+  await commonGoogleSpreadSheetsApi.addThanksInfoToGoogleSpreadSheets(payload)
 
   isLoading.value = false
   uiStore.clearRecipientUserInfo()
