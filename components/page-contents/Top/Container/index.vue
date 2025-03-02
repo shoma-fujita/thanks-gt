@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import HomeBody from '../HomeBody/index.vue'
+import TopBody from '../TopBody/index.vue'
 </script>
 
 <template>
   <div class="Container">
-    <HomeBody />
+    <topBody />
   </div>
 </template>

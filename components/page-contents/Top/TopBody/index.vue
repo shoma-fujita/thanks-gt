@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { isNull } from 'es-toolkit'
 import type { registeredUserInfo } from './types'
 import { commonAuthApiStore } from '@/store/common/auth'
-import { pageUiStore } from '@/store/page/home'
+import { pageUiStore } from '@/store/page/top'
 import { commonGoogleSpreadSheetsApiStore } from '@/store/common/googleSpreadSheets'
 
 /** Supabase Client */
@@ -195,55 +195,55 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="HomeBody">
-    <div class="HomeBody__SecondaryContent">
+  <div class="TopBody">
+    <div class="TopBody__SecondaryContent">
       <img
         v-for="(memoryImage, index) in memoryImages"
         :key="memoryImage.path"
         :src="memoryImage.signedUrl"
-        class="HomeBody__Image HomeBody__Image--Huge HomeBody__Image--Slide HomeBody__Image--SmallRadius"
+        class="TopBody__Image TopBody__Image--Huge TopBody__Image--Slide TopBody__Image--SmallRadius"
         :style="{ '--index': index }"
       >
     </div>
-    <div class="HomeBody__MainContent">
-      <div class="HomeBody__MainContentHead">
+    <div class="TopBody__MainContent">
+      <div class="TopBody__MainContentHead">
         <img
           src="@/assets/img/cherry-blossoms-icon.png"
           alt="桜の画像"
-          class="HomeBody__Image HomeBody__Image--Large"
+          class="TopBody__Image TopBody__Image--Large"
         >
-        <h1 class="HomeBody__Title">
+        <h1 class="TopBody__Title">
           ありがとうを伝える
         </h1>
       </div>
-      <div class="HomeBody__HeadContent">
-        <div class="HomeBody__DropDownContent">
+      <div class="TopBody__HeadContent">
+        <div class="TopBody__DropDownContent">
           <div
-            class="HomeBody__DropDown"
+            class="TopBody__DropDown"
           >
             <template v-if="recipientUserInfo[0]">
               <div
                 v-for="recipientUser in recipientUserInfo"
                 :key="recipientUser.slackMemberId"
-                class="HomeBody__DropDownUserInfoDelimiter"
+                class="TopBody__DropDownUserInfoDelimiter"
               >
                 <img
                   :src="recipientUser.slackProfileImage"
                   alt="slackのプロフィール画像"
-                  class="HomeBody__Image HomeBody__Image--Medium HomeBody__Image--MediumRadius"
+                  class="TopBody__Image TopBody__Image--Medium TopBody__Image--MediumRadius"
                 >
-                <span class="HomeBody__DropDownItem">{{ recipientUser.slackName }}</span>
+                <span class="TopBody__DropDownItem">{{ recipientUser.slackName }}</span>
                 <img
                   src="@/assets/img/cancel-icon.png"
                   alt="キャンセルの画像"
-                  class="HomeBody__DropDownImage HomeBody__Image HomeBody__Image--Medium HomeBody__Image--MediumRadius"
+                  class="TopBody__DropDownImage TopBody__Image TopBody__Image--Medium TopBody__Image--MediumRadius"
                   @click.stop="selectUser(recipientUser.slackName, recipientUser.slackMemberId, recipientUser.slackProfileImage)"
                 >
               </div>
             </template>
             <button
               ref="dropdownRef"
-              class="HomeBody__DropDownButton"
+              class="TopBody__DropDownButton"
               type="button"
               @click="toggleDropdown"
             >
@@ -254,54 +254,54 @@ onUnmounted(() => {
         <div
           v-if="isDropdownOpen"
           ref="selectContentRef"
-          class="HomeBody__SelectContent"
+          class="TopBody__SelectContent"
         >
           <div
             v-for="user in registeredUserInfo"
             :key="user.uuid"
-            class="HomeBody__SelectItemList"
+            class="TopBody__SelectItemList"
             @click="selectUser(user.name, user.slackMemberId, user.slackProfileImage)"
           >
-            <div class="HomeBody__SelectUserInfoDelimiter">
+            <div class="TopBody__SelectUserInfoDelimiter">
               <img
                 :src="user.slackProfileImage"
                 alt="slackのプロフィール画像"
-                class="HomeBody__Image HomeBody__Image--Large HomeBody__Image--MediumRadius"
+                class="TopBody__Image TopBody__Image--Large TopBody__Image--MediumRadius"
               >
-              <span class="HomeBody__SelectItem">{{ user.name }}</span>
+              <span class="TopBody__SelectItem">{{ user.name }}</span>
             </div>
             <img
               v-if="isSelectedUser(user.slackMemberId)"
               src="@/assets/img/check-icon.png"
               alt="選択済みの画像"
-              class="HomeBody__Image HomeBody__Image--Medium"
+              class="TopBody__Image TopBody__Image--Medium"
             >
           </div>
         </div>
       </div>
       <p
         v-if="errorMessages.recipientUserInfo"
-        class="HomeBody__ErrorMessage"
+        class="TopBody__ErrorMessage"
       >
         {{ errorMessages.recipientUserInfo }}
       </p>
-      <div class="HomeBody__TextContent">
+      <div class="TopBody__TextContent">
         <textarea
           v-model="message"
-          class="HomeBody__Text"
+          class="TopBody__Text"
           placeholder="感謝の言葉を入力"
         />
       </div>
       <p
         v-if="errorMessages.thanksMessage"
-        class="HomeBody__ErrorMessage"
+        class="TopBody__ErrorMessage"
       >
         {{ errorMessages.thanksMessage }}
       </p>
       <button
-        class="HomeBody__SubmitButton"
+        class="TopBody__SubmitButton"
         :disabled="isLoading"
-        :class="{ 'HomeBody__SubmitButton--Disabled': isLoading }"
+        :class="{ 'TopBody__SubmitButton--Disabled': isLoading }"
         @click="submitMessage"
       >
         <template v-if="isLoading">
@@ -311,7 +311,7 @@ onUnmounted(() => {
           <img
             src="@/assets/img/love-icon.png"
             alt="いいね画像"
-            class="HomeBody__Image HomeBody__Image--Medium"
+            class="TopBody__Image TopBody__Image--Medium"
           >
           {{ successMessage }}
         </template>

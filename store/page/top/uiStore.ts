@@ -2,12 +2,12 @@ import { isNull } from 'es-toolkit'
 import type { UiState, registeredUserInfo, senderUserInfo, recipientUserInfo, memoryImage } from './types'
 
 /**
- * ホーム画面の UI Store
- * @returns ホーム画面の UI Store
+ * Top 画面の UI Store
+ * @returns Top 画面の UI Store
  */
 export const pageUiStore = () => {
   /** State */
-  const _state = useState<UiState>('page-ui-home-store', () => {
+  const _state = useState<UiState>('page-ui-top-store', () => {
     return {
       registeredUserInfo: null,
       senderUserInfo: null,

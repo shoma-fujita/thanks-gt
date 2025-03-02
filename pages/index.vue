@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Container from '@/components/page-contents/Top/Container/index.vue'
+
 definePageMeta({
   layout: 'client-default',
 })
@@ -6,8 +8,6 @@ definePageMeta({
 
 <template>
   <div class="Top">
-    <h1>Top Page</h1>
-    <p>Welcome to the top page</p>
-    <NuxtLink to="/home">ホーム画面へ</NuxtLink>
+    <Container />
   </div>
 </template>
