@@ -4,12 +4,16 @@ import { isNull } from 'es-toolkit'
 import type { registeredUserInfo } from './types'
 import { commonAuthApiStore } from '@/store/common/auth'
 import { pageUiStore } from '@/store/page/home'
+import { commonGoogleSpreadSheetsApiStore } from '@/store/common/googleSpreadSheets'
 
 /** Supabase Client */
 const client = useSupabaseClient()
 
 /** Common Auth API */
 const commonAuthApi = commonAuthApiStore()
+
+/** Common Google Spread Sheets API */
+const commonGoogleSpreadSheetsApi = commonGoogleSpreadSheetsApiStore()
 
 /** page ui store */
 const uiStore = pageUiStore()
@@ -162,17 +166,14 @@ const submitMessage = async () => {
   const recipientUserMemberIdText = uiStore.recipientUserInfo.value.map(user => user.slackMemberId).join(', ')
 
   const payload = {
-    from: senderUserInfo?.slackName,
-    fromMemberId: senderUserInfo?.slackMemberId,
+    from: senderUserInfo.slackName,
+    fromMemberId: senderUserInfo.slackMemberId,
     to: recipientUserNameText,
     toMemberIds: recipientUserMemberIdText,
     message: message.value,
   }
 
-  await useFetch('/api/googleSpredsheet/add', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+  commonGoogleSpreadSheetsApi.addThanksInfoToGoogleSpreadSheets(payload)
 
   isLoading.value = false
   uiStore.clearRecipientUserInfo()

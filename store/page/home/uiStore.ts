@@ -1,3 +1,4 @@
+import { isNull } from 'es-toolkit'
 import type { UiState, registeredUserInfo, senderUserInfo, recipientUserInfo, memoryImage } from './types'
 
 /**
@@ -21,7 +22,10 @@ export const pageUiStore = () => {
       return _state.value.registeredUserInfo
     }),
     /** 感謝メッセージの送信者の情報 */
-    senderUserInfo: computed<senderUserInfo | null>(() => {
+    senderUserInfo: computed<senderUserInfo>(() => {
+      if (isNull(_state.value.senderUserInfo)) {
+        throw new Error('_state.value.senderUserInfo is null')
+      }
       return _state.value.senderUserInfo
     }),
     /** 感謝メッセージを受け取る人の情報 */
