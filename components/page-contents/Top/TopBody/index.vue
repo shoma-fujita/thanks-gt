@@ -112,7 +112,7 @@ const senderUserInfo = uiStore.senderUserInfo.value
 /** 選択中のユーザー情報 */
 const recipientUserInfo = uiStore.recipientUserInfo
 
-/** 思い出の写真 */
+/** 思い出の写真一覧 */
 const memoryImages = uiStore.memoryImage
 
 /** ドロップダウンの開閉 */
