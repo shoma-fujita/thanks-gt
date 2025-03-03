@@ -18,20 +18,28 @@ const signInWithSlack = async () => {
 
 <template>
   <div class="LogInBody">
-    <h1 class="LogInBody__Title">
-      ログイン画面
-    </h1>
-    <button
-      class="LogInBody__Button"
-      @click="
-        signInWithSlack"
-    >
-      <img
-        src="@/assets/img/slack-icon.png"
-        alt="Slack のアイコン画像"
-        class="LogInBody__Image"
-      >Slack でログイン
-    </button>
+    <div class="LogInBody__Container">
+      <div class="LogInBody__Head">
+        <h1 class="LogInBody__Title">
+          Thanks GT へようこそ！
+        </h1>
+        <p class="LogInBody__Description">
+          Slack アカウントでログインしてください
+        </p>
+      </div>
+      <button
+        class="LogInBody__Button"
+        @click="
+          signInWithSlack"
+      >
+        <img
+          src="@/assets/img/slack-icon.png"
+          alt="Slack のアイコン画像"
+          class="LogInBody__Image"
+        >Slack でログイン
+      </button>
+      <p>Slack アカウントをお持ちでない場合は、<NuxtLink to="https://slack.com/get-started#/createnew">こちら</NuxtLink></p>
+    </div>
   </div>
 </template>
 

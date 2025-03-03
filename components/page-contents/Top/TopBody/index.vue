@@ -216,6 +216,7 @@ onUnmounted(() => {
         <h1 class="TopBody__Title">
           ありがとうを伝える
         </h1>
+        <p>送信したメッセージは、平日毎日 18:00 に slack に通知します</p>
       </div>
       <div class="TopBody__HeadContent">
         <div class="TopBody__DropDownContent">

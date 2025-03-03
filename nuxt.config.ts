@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@nuxtjs/supabase'],
   ssr: false,
   devtools: { enabled: true },
-  css: ['normalize.css'],
+  css: ['normalize.css', '@/assets/css/global.scss'],
   runtimeConfig: {
     public: {
       googleServiceAccountEmail: '',
