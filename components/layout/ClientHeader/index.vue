@@ -28,12 +28,9 @@ const signOut = async () => {
         class="ClientHeader__ApplicationImage"
         alt="アプリケーションの画像"
       >
-      <NuxtLink
-        to="/"
-        class="ClientHeader__Link"
-      >
+      <span class="ClientHeader__ApplicationName">
         Thanks GT
-      </NuxtLink>
+      </span>
     </div>
     <div class="ClientHeader__UserInformationDelimiter">
       <img
