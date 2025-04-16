@@ -3,15 +3,14 @@
     justify-content: center;
 
     &__Container {
-        padding: 24px 0;
         display: flex;
         gap: 24px;
         flex-direction: column;
         align-items: center;
-        max-width: 28rem;
-        width: 100%;
+        max-width: fit-content;
         background-color: white;
-        border-radius: 0.5rem;
+        padding: 48px 64px;
+        border-radius: 16px;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
@@ -34,7 +33,7 @@
         cursor: pointer;
         display: flex;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: bold;
         justify-content: center;
         padding: 8px 16px;
         gap: 8px;

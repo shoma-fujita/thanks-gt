@@ -1,5 +1,7 @@
 .Client {
-    &__Main {
-        min-height: 650px;
+    &__Main{
+        padding-top: 88px;
+        background-color: #f5f6f6;
+        min-height: 100vh;
     }
 }

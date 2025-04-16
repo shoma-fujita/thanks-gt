@@ -2,8 +2,7 @@
     display: flex;
     justify-content: center;
     font-size: 14px;
-    gap: 440px;
-    padding-top: 80px;
+    gap: 520px;
 
     &__MainContent {
         gap: 24px;
@@ -13,12 +12,19 @@
 
         &Head {
             display: flex;
-            gap: 4px;
+            flex-direction: column;
         }
     }
 
     &__Title {
         margin: 0;
+
+        &Delimiter{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
     }
 
     &__HeadContent {
@@ -34,6 +40,7 @@
         flex-direction: column;
         min-width: 220px;
         gap: 4px;
+        background-color: white;
     }
 
     &__HeadContent {

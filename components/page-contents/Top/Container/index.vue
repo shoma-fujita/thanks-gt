@@ -4,6 +4,6 @@ import TopBody from '../TopBody/index.vue'
 
 <template>
   <div class="Container">
-    <topBody />
+    <TopBody />
   </div>
 </template>
